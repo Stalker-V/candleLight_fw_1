@@ -1,8 +1,10 @@
+#pragma once
+
 /*
 
 The MIT License (MIT)
 
-Copyright (c) 2016 Hubert Denkmair
+Copyright (c) 2022 fenugrec
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,31 +26,9 @@ THE SOFTWARE.
 
 */
 
-#include "timer.h"
+#include "can.h"
 #include "hal_include.h"
 
-void timer_init(void)
-{
-	__HAL_RCC_TIM2_CLK_ENABLE();
+void device_can_init(can_data_t *hcan, CAN_TypeDef *instance);
 
-	TIM2->CR1 = 0;
-	TIM2->CR2 = 0;
-	TIM2->SMCR = 0;
-	TIM2->DIER = 0;
-	TIM2->CCMR1 = 0;
-	TIM2->CCMR2 = 0;
-	TIM2->CCER = 0;
-#if defined (STM32G0)
-	TIM2->PSC = 64-1; // run @64MHz/640 = 1MHz = 1us
-#else
-	TIM2->PSC = 48-1; // run @48MHz/480 = 1MHz = 1us
-#endif
-	TIM2->ARR = 0xFFFFFFFF;
-	TIM2->CR1 |= TIM_CR1_CEN;
-	TIM2->EGR = TIM_EGR_UG;
-}
-
-uint32_t timer_get(void)
-{
-	return TIM2->CNT;
-}
+void device_sysclock_config(void);
